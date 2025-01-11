@@ -8,8 +8,6 @@ import {
   TrendingDown,
   DollarSign,
   LineChartIcon as ChartLine,
-  Moon,
-  Sun,
   Bitcoin,
   EclipseIcon as Ethereum,
   Triangle,
@@ -25,8 +23,6 @@ import {
 } from "recharts";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 
 const CryptoDashboard = () => {
   const [mounted, setMounted] = useState(false);
@@ -38,21 +34,27 @@ const CryptoDashboard = () => {
   const [error, setError] = useState(null);
   const { theme, setTheme } = useTheme();
 
-  // Fix for hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const coins = [
-    { id: "bitcoin", name: "Bitcoin", icon: <Bitcoin className="w-5 h-5" /> },
+    {
+      id: "bitcoin",
+      name: "BTC",
+      fullName: "Bitcoin",
+      icon: <Bitcoin className="w-5 h-5" />,
+    },
     {
       id: "ethereum",
-      name: "Ethereum",
+      name: "ETH",
+      fullName: "Ethereum",
       icon: <Ethereum className="w-5 h-5" />,
     },
     {
       id: "matic-network",
-      name: "Polygon (MATIC)",
+      name: "MATIC",
+      fullName: "Polygon",
       icon: <Triangle className="w-5 h-5" />,
     },
   ];
@@ -69,14 +71,12 @@ const CryptoDashboard = () => {
 
       setStats(statsData);
       setDeviation(deviationData);
-
-      const formattedChartData = marketChartData.prices.map(
-        ([timestamp, price]) => ({
+      setChartData(
+        marketChartData.prices.map(([timestamp, price]) => ({
           date: new Date(timestamp).toLocaleDateString(),
           price: parseFloat(price.toFixed(2)),
-        }),
+        })),
       );
-      setChartData(formattedChartData);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -91,23 +91,20 @@ const CryptoDashboard = () => {
   if (!mounted) return null;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="mb-8 flex justify-between items-center">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-violet-500 to-indigo-500 bg-clip-text text-transparent">
-          Crypto Analytics Dashboard
+    <div className="p-3 sm:p-6 max-w-7xl mx-auto">
+      <div className="mb-4 sm:mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-violet-500 to-indigo-500 bg-clip-text text-transparent text-center sm:text-left">
+          Crypto Analytics
         </h1>
-        <div className="flex items-center space-x-2 bg-secondary/50 p-2 rounded-full">
-          <DarkModeToggle theme={theme} setTheme={setTheme} />
-        </div>
       </div>
 
-      <div className="mb-8 flex justify-center">
-        <div className="inline-flex gap-2 bg-secondary/50 p-2 rounded-full">
+      <div className="mb-6 flex justify-center">
+        <div className="inline-flex gap-2 bg-secondary/50 p-2 rounded-full overflow-x-auto max-w-full">
           {coins.map((coin) => (
             <motion.button
               key={coin.id}
               onClick={() => setSelectedCoin(coin.id)}
-              className={`min-w-[140px] px-4 py-2 rounded-full transition-all flex items-center justify-center gap-2 ${
+              className={`min-w-[100px] px-3 py-2 rounded-full transition-all flex items-center justify-center gap-2 ${
                 selectedCoin === coin.id
                   ? "bg-primary text-primary-foreground shadow-lg"
                   : "hover:bg-primary/10"
@@ -116,31 +113,33 @@ const CryptoDashboard = () => {
               whileTap={{ scale: 0.95 }}
             >
               {coin.icon}
-              {coin.name}
+              <span className="block sm:hidden">{coin.name}</span>
+              <span className="hidden sm:block">{coin.fullName}</span>
             </motion.button>
           ))}
         </div>
       </div>
 
       {loading && (
-        <div className="text-center py-12">
+        <div className="text-center py-8">
           <motion.div
-            className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+            className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"
             initial={{ opacity: 0, rotate: 0 }}
             animate={{ opacity: 1, rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
           />
         </div>
       )}
+
       {error && (
-        <div className="text-red-500 text-center bg-red-100 dark:bg-red-900/20 p-4 rounded-lg">
+        <div className="text-red-500 text-center bg-red-100 dark:bg-red-900/20 p-4 rounded-lg my-4">
           {error}
         </div>
       )}
 
       {!loading && !error && stats && deviation && chartData && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4 sm:space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <PriceStatisticsCard stats={stats} />
             <DeviationAnalysisCard deviation={deviation} />
           </div>
@@ -153,14 +152,14 @@ const CryptoDashboard = () => {
 
 const PriceStatisticsCard = ({ stats }) => (
   <Card className="overflow-hidden">
-    <CardHeader className="bg-gradient-to-r from-violet-500 to-indigo-500">
-      <CardTitle className="flex items-center gap-2 text-white">
+    <CardHeader className="bg-gradient-to-r from-violet-500 to-indigo-500 p-4">
+      <CardTitle className="flex items-center gap-2 text-white text-lg sm:text-xl">
         <DollarSign className="w-5 h-5" />
         Price Statistics
       </CardTitle>
     </CardHeader>
-    <CardContent className="p-6">
-      <div className="space-y-6">
+    <CardContent className="p-4 sm:p-6">
+      <div className="space-y-4">
         <StatItem
           label="Current Price"
           value={`$${stats.price?.toLocaleString()}`}
@@ -188,14 +187,14 @@ const PriceStatisticsCard = ({ stats }) => (
 
 const DeviationAnalysisCard = ({ deviation }) => (
   <Card className="overflow-hidden">
-    <CardHeader className="bg-gradient-to-r from-emerald-500 to-teal-500">
-      <CardTitle className="flex items-center gap-2 text-white">
+    <CardHeader className="bg-gradient-to-r from-emerald-500 to-teal-500 p-4">
+      <CardTitle className="flex items-center gap-2 text-white text-lg sm:text-xl">
         <TrendingUp className="w-5 h-5" />
-        Price Deviation Analysis
+        Price Deviation
       </CardTitle>
     </CardHeader>
-    <CardContent className="p-6">
-      <div className="space-y-6">
+    <CardContent className="p-4 sm:p-6">
+      <div className="space-y-4">
         <StatItem
           label="Standard Deviation"
           value={`$${deviation.deviation?.toLocaleString()}`}
@@ -212,14 +211,14 @@ const DeviationAnalysisCard = ({ deviation }) => (
 
 const PriceHistoryCard = ({ chartData }) => (
   <Card>
-    <CardHeader className="bg-gradient-to-r from-violet-500 to-indigo-500">
-      <CardTitle className="flex items-center gap-2 text-white">
+    <CardHeader className="bg-gradient-to-r from-violet-500 to-indigo-500 p-4">
+      <CardTitle className="flex items-center gap-2 text-white text-lg sm:text-xl">
         <ChartLine className="w-5 h-5" />
         Price History (30 Days)
       </CardTitle>
     </CardHeader>
-    <CardContent className="p-6">
-      <div className="h-[400px] w-full">
+    <CardContent className="p-4 sm:p-6">
+      <div className="h-[300px] sm:h-[400px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData}>
             <CartesianGrid
@@ -229,14 +228,15 @@ const PriceHistoryCard = ({ chartData }) => (
             />
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 12 }}
-              interval={6}
+              tick={{ fontSize: 10 }}
+              interval="preserveStartEnd"
               stroke="var(--foreground)"
             />
             <YAxis
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 10 }}
               tickFormatter={(value) => `$${value.toLocaleString()}`}
               stroke="var(--foreground)"
+              width={80}
             />
             <Tooltip
               formatter={(value) => [`$${value.toLocaleString()}`, "Price"]}
@@ -251,9 +251,9 @@ const PriceHistoryCard = ({ chartData }) => (
               type="monotone"
               dataKey="price"
               stroke="url(#colorGradient)"
-              strokeWidth={3}
+              strokeWidth={2}
               dot={false}
-              activeDot={{ r: 8, fill: "var(--primary)" }}
+              activeDot={{ r: 6, fill: "var(--primary)" }}
             />
             <defs>
               <linearGradient id="colorGradient" x1="0" y1="0" x2="1" y2="0">
@@ -269,9 +269,13 @@ const PriceHistoryCard = ({ chartData }) => (
 );
 
 const StatItem = ({ label, value, icon, color }) => (
-  <div className="bg-secondary/20 p-4 rounded-lg">
+  <div className="bg-secondary/20 p-3 sm:p-4 rounded-lg">
     <p className="text-sm text-muted-foreground mb-1">{label}</p>
-    <p className={`text-2xl font-bold flex items-center gap-2 ${color || ""}`}>
+    <p
+      className={`text-xl sm:text-2xl font-bold flex items-center gap-2 ${
+        color || ""
+      }`}
+    >
       {icon}
       {value}
     </p>

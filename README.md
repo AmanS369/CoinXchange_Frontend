@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next.js Frontend for Crypto Tracker
 
-## Getting Started
+This repository contains the **Next.js frontend** for the **Crypto Tracker** project. The application interacts with the backend to display cryptocurrency prices, track deviations, and fetch market charts.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Fetch and display the current price of cryptocurrencies.
+- Track deviations in cryptocurrency prices.
+- Display the market chart for a cryptocurrency over the last 30 days.
+- Responsive UI for an enhanced user experience.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Tech Stack
 
-## Learn More
+- **Framework**: [Next.js](https://nextjs.org/)
+- **UI Framework**: Tailwind CSS
+- **Backend Integration**: Fetches data from a Node.js backend.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Installation and Setup
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Follow these steps to set up and run the project on your local machine:
 
-## Deploy on Vercel
+### Prerequisites
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Node.js** (v16 or higher)
+- **npm** or **yarn** (Package Manager)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Steps
+
+1. **Clone the Repository**
+
+   ```bash
+   git clone <repository_url>
+   cd <repository_name>
+   ```
+
+2. **Install Dependencies**
+
+   Using npm:
+
+   ```bash
+   npm install
+   ```
+
+   Or, using yarn:
+
+   ```bash
+   yarn install
+   ```
+
+3. **Set Up Environment Variables**
+
+   Create a `.env` file in the root directory and add the required variables:
+
+   ```env
+   NEXT_PUBLIC_API_URL=https://coin-xchange-wine.vercel.app
+   ```
+
+   Replace the value of `NEXT_PUBLIC_API_URL` with your backend API's URL.
+
+4. **Run the Development Server**
+
+   Using npm:
+
+   ```bash
+   npm run dev
+   ```
+
+   Or, using yarn:
+
+   ```bash
+   yarn dev
+   ```
+
+   The development server will start, and the application will be accessible at:  
+   **http://localhost:3000**
+
+5. **Build and Run for Production**
+
+   To build the project for production, run:
+
+   Using npm:
+
+   ```bash
+   npm run build
+   npm start
+   ```
+
+   Or, using yarn:
+
+   ```bash
+   yarn build
+   yarn start
+   ```
+
+---
+
+## Scripts
+
+The following scripts are available in the project:
+
+- **`npm run dev`**: Starts the development server.
+- **`npm run build`**: Builds the project for production.
+- **`npm start`**: Runs the production build.
+- **`npm run lint`**: Lints the codebase for errors.
+
+---
